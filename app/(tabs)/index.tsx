@@ -246,6 +246,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
 
+
   // weekly consumption section
   weeklyConsumptionContainer: {
     padding: 20,
