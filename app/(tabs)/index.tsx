@@ -8,6 +8,14 @@ import { BarChart } from "react-native-gifted-charts";
 import { useFonts } from 'expo-font';
 import { useState } from 'react';
 
+interface MealItemProps {
+  title: string;
+  carbo: string;
+  fats: string;
+  sugar: string;
+  time: string;
+}
+
 export default function HomeScreen() {
   const { width: screenWidth } = useWindowDimensions();
 
@@ -23,9 +31,15 @@ export default function HomeScreen() {
     'Archivo-Bold': require('@/assets/fonts/Archivo-Bold.ttf'),
   });
 
+  // period selection modal for weekly dropdown
   const [selectedPeriod, setSelectedPeriod] = useState('Weekly');
   const [showPeriodModal, setShowPeriodModal] = useState(false);
   const periods = ['Weekly', 'Daily', 'Monthly'];
+
+  // nutrient selection modal for nutrients dropdown
+  const [selectedNutrient, setSelectedNutrient] = useState('Nutrients');
+  const [showNutrientModal, setShowNutrientModal] = useState(false);
+  const nutrients = ['Carbo', 'Fat', 'Sugar'];
 
   if (!fontsLoaded) {
     return null;
@@ -54,14 +68,32 @@ export default function HomeScreen() {
       </ThemedView>
 
       {/* profile health summary section */}
+      <ThemedView style={styles.healthSummaryContainer}>
+        <ThemedView style={styles.healthSummaryContent}>
+          <Ionicons name="cafe-outline" size={24} color="#666" />
+          <ThemedView style={styles.healthTextContainer}>
+            <ThemedText style={styles.healthTitle}>Your Health Overview Summary</ThemedText>
+            <ThemedText style={styles.healthSubtitle}>Daily Sugar Limit: <ThemedText style={styles.healthValue}>25 gram</ThemedText></ThemedText>
+          </ThemedView>
+        </ThemedView>
+      </ThemedView>
 
-      {/* weekly consumption section */}
-      <ThemedView style={styles.weeklyConsumptionContainer}>
+       {/* weekly consumption section */}
+       <ThemedView style={styles.weeklyConsumptionContainer}>
         <ThemedView style={styles.consumptionHeader}>
           <ThemedView style={styles.consumptionLeft}>
             <Ionicons name="fast-food-outline" size={24} color="black" />
-            <ThemedText style={styles.consumptionTitle}>Your Weekly Consumption</ThemedText>
+            <ThemedText style={styles.consumptionTitle}>Meal Tracker</ThemedText>
           </ThemedView>
+        </ThemedView>
+        
+        <ThemedView style={styles.dropdownsContainer}>
+          <TouchableOpacity 
+            style={styles.dropdownButton}
+            onPress={() => setShowNutrientModal(true)}>
+            <ThemedText style={styles.dropdownText}>{selectedNutrient}</ThemedText>
+            <Ionicons name="chevron-down" size={16} color="black" />
+          </TouchableOpacity>
           <TouchableOpacity 
             style={styles.dropdownButton}
             onPress={() => setShowPeriodModal(true)}>
@@ -129,6 +161,32 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </Modal>
 
+      {/* nutrient selection modal */}
+      <Modal
+        visible={showNutrientModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowNutrientModal(false)}>
+        <TouchableOpacity 
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowNutrientModal(false)}>
+          <ThemedView style={styles.modalContent}>
+            {nutrients.map((nutrient) => (
+              <TouchableOpacity
+                key={nutrient}
+                style={styles.modalItem}
+                onPress={() => {
+                  setSelectedNutrient(nutrient);
+                  setShowNutrientModal(false);
+                }}>
+                <ThemedText style={styles.modalItemText}>{nutrient}</ThemedText>
+              </TouchableOpacity>
+            ))}
+          </ThemedView>
+        </TouchableOpacity>
+      </Modal>
+
       {/* weekly nutritional summary section */}
       <ThemedView style={styles.summaryContainer}>
         <ThemedView style={styles.summaryBox}>
@@ -156,56 +214,46 @@ export default function HomeScreen() {
         </ThemedView>
       </ThemedView>
 
-      {/* consumption history section */}
-      <ThemedView style={styles.sectionTitleContainer}>
-        <ThemedView style={styles.sectionTitleContent}>
-          <Ionicons name="fast-food-outline" size={24} color="black" />
-          <ThemedText style={styles.sectionTitle}>Consumption History</ThemedText>
-        </ThemedView>
-      </ThemedView>
+      {/* overall meal items section */}
+      <ThemedView style={styles.mealsList}>
 
-      <ThemedView style={styles.highlightCard}>
-        <ThemedView style={styles.highlightHeader}>
-          <Ionicons name="gift" size={20} color="#fff" />
-          <ThemedText style={styles.highlightTitle}>Highlight of the Day</ThemedText>
-        </ThemedView>
-
-        <ThemedView style={styles.highlightContent}>
-          <ThemedText style={styles.foodTitle}>Chicken Crispy Mrs Elly</ThemedText>
-          <ThemedView style={styles.nutritionContainer}>
-            <ThemedView style={styles.nutritionItem}>
-              <Ionicons name="archive-sharp" size={20} color="#666" />
-              <ThemedText style={styles.nutritionValue}>150</ThemedText>
-              <ThemedText style={styles.nutritionUnit}>Ckal</ThemedText>
-            </ThemedView>
-
-            <ThemedView style={styles.nutritionItem}>
-              <Ionicons name="archive-sharp" size={20} color="#666" />
-              <ThemedText style={styles.nutritionValue}>150</ThemedText>
-              <ThemedText style={styles.nutritionUnit}>Ckal</ThemedText>
-            </ThemedView>
-
-            <ThemedView style={styles.nutritionItem}>
-              <Ionicons name="archive-sharp" size={20} color="#666" />
-              <ThemedText style={styles.nutritionValue}>150</ThemedText>
-              <ThemedText style={styles.nutritionUnit}>Ckal</ThemedText>
-            </ThemedView>
+        {/* Highlight of the Day */}
+        <ThemedView style={styles.highlightContainer}>
+          <ThemedView style={styles.highlightHeader}>
+            <Ionicons name="gift" size={20} color="white" />
+            <ThemedText style={styles.highlightTitle}>Highlight of the Day</ThemedText>
           </ThemedView>
-
-          <ThemedView style={styles.footerContainer}>
-          <ThemedText style={styles.dateText}>Tue, 18 July • 07:00 am</ThemedText>
-          <TouchableOpacity style={styles.seeMoreButton}>
-            <ThemedText style={styles.seeMoreText}>See More</ThemedText>
-            <Ionicons name="chevron-forward" size={16} color="#666" />
-          </TouchableOpacity>
-        </ThemedView>
+          <MealItem
+            title="Chicken Crispy Mrs Elly"
+            carbo="30"
+            fats="12"
+            sugar="5"
+            time="Tue, 18 July • 07.00 am"
+          />
         </ThemedView>
       </ThemedView>
-
-      
     </ParallaxScrollView>
   );
 }
+
+// meal item component
+const MealItem = ({ title, carbo, fats, sugar, time }: MealItemProps) => (
+  <ThemedView style={styles.mealItem}>
+    <ThemedText style={styles.mealTitle}>{title}</ThemedText>
+    <ThemedView style={styles.nutritionInfo}>
+      <ThemedText style={styles.nutritionText}>Carbo: {carbo} <ThemedText style={styles.unit}>gram</ThemedText></ThemedText>
+      <ThemedText style={styles.nutritionText}>Fats: {fats} <ThemedText style={styles.unit}>gram</ThemedText></ThemedText>
+      <ThemedText style={styles.nutritionText}>Sugar: {sugar} <ThemedText style={styles.unit}>gram</ThemedText></ThemedText>
+    </ThemedView>
+    <ThemedView style={styles.mealFooter}>
+      <ThemedText style={styles.timeText}>{time}</ThemedText>
+      <TouchableOpacity style={styles.seeMoreButton}>
+        <ThemedText style={styles.seeMoreText}>See More</ThemedText>
+        <Ionicons name="chevron-forward" size={16} color="#666" />
+      </TouchableOpacity>
+    </ThemedView>
+  </ThemedView>
+)
 
 const styles = StyleSheet.create({
   // profile section
@@ -246,6 +294,41 @@ const styles = StyleSheet.create({
     padding: 8,
   },
 
+  // health summary overview container
+  healthSummaryContainer: {
+    backgroundColor: 'white',
+    marginHorizontal: 0,
+    marginVertical: 16,
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 2,
+    borderColor: '#F0F0F0',
+    marginTop: 2,
+    marginBottom: 2,
+  },
+  healthSummaryContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  healthTextContainer: {
+    flex: 1,
+  },
+  healthTitle: {
+    fontSize: 16,
+    fontFamily: 'Archivo-Medium',
+    color: '#000',
+    marginBottom: 4,
+  },
+  healthSubtitle: {
+    fontSize: 14,
+    fontFamily: 'Archivo',
+    color: '#666',
+  },
+  healthValue: {
+    fontFamily: 'Archivo-Medium',
+    color: '#000',
+  },
 
   // weekly consumption section
   weeklyConsumptionContainer: {
@@ -278,6 +361,11 @@ const styles = StyleSheet.create({
   consumptionTitle: {
     fontSize: 16,
     fontFamily: 'Archivo-Medium',
+  },
+  dropdownsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
   },
   dropdownButton: {
     flexDirection: 'row',
@@ -378,82 +466,74 @@ summaryUnit: {
   color: '#666',
 },
 
-// consumption history section
-historyContainer: {
-  marginTop: 24,
-  marginHorizontal: 20,
+// meals list section
+mealsList: {
+  padding: 16,
+  gap: 16,
+  marginHorizontal: -16,
 },
-historyTitleContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 8,
-  marginBottom: 16,
-},
-historyTitle: {
-  fontSize: 18,
-  fontFamily: 'Archivo-Bold',
-  color: '#000',
-},
-highlightCard: {
-  borderRadius: 24,
+
+// highlight section
+highlightContainer: {
+  marginTop: -15,
+  borderRadius: 16,
   overflow: 'hidden',
+  backgroundColor: 'white',
+  marginHorizontal: 0,
   borderWidth: 2,
   borderColor: '#F0F0F0',
 },
 highlightHeader: {
-  backgroundColor: '#6366F1',
-  padding: 16,
-  flexDirection: 'row',    
-  alignItems: 'center',    
-  gap: 8,                  
-},
-highlightTitle: {
-  fontSize: 16,
-  fontFamily: 'Archivo-Bold',
-  color: 'white',
-},
-highlightContent: {
-  padding: 16,
-},
-foodTitle: {
-  fontSize: 18,
-  fontFamily: 'Archivo-Bold',
-  color: '#000',
-  marginBottom: 10,
-},
-nutritionContainer: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  marginTop: 8,
-},
-nutritionItem: {
   flexDirection: 'row',
   alignItems: 'center',
-  gap: 4,
+  gap: 8,
+  backgroundColor: '#6366F1',
+  padding: 16,
 },
-nutritionValue: {
-  fontSize: 16,
+highlightTitle: {
+  color: 'white',
   fontFamily: 'Archivo-Bold',
-  color: '#000',
+  fontSize: 16,
 },
-nutritionUnit: {
-  fontSize: 12,
-  fontFamily: 'Archivo',
+
+// meal item component
+mealItem: {
+  backgroundColor: 'white',
+  borderRadius: 16,
+  padding: 16,
+  marginHorizontal: 0,
+},
+mealTitle: {
+  fontSize: 18,
+  fontFamily: 'Archivo-Bold',
+  marginBottom: 8,
+},
+nutritionInfo: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  marginBottom: 16,
+},
+nutritionText: {
+  fontFamily: 'Archivo-Medium',
+  fontSize: 14,
+},
+unit: {
   color: '#666',
+  fontFamily: 'Archivo',
 },
-footerContainer: {
+
+// footer section
+mealFooter: {
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center',
   backgroundColor: '#F3F4F6',
   padding: 12,
-  borderRadius: 20,
-  marginTop: 16,
+  borderRadius: 12,
 },
-dateText: {
-  fontSize: 14,
-  fontFamily: 'Archivo',
+timeText: {
   color: '#666',
+  fontFamily: 'Archivo',
 },
 seeMoreButton: {
   flexDirection: 'row',
@@ -461,8 +541,7 @@ seeMoreButton: {
   gap: 4,
 },
 seeMoreText: {
-  fontSize: 14,
-  fontFamily: 'Archivo',
   color: '#666',
+  fontFamily: 'Archivo',
 },
 });

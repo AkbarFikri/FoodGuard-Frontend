@@ -1,7 +1,12 @@
-// app/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { View, StyleSheet } from 'react-native';
+
+interface TabIconProps {
+  color?: string;
+  focused: boolean;
+  size?: number;
+}
 
 export default function TabLayout() {
   return (
@@ -18,7 +23,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color, focused }: TabIconProps) => (
             <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
           ),
         }}
@@ -28,7 +33,7 @@ export default function TabLayout() {
         name="history"
         options={{
           title: 'History',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color, focused }: TabIconProps) => (
             <Ionicons name={focused ? 'time' : 'time-outline'} size={24} color={color} />
           ),
         }}
@@ -38,7 +43,7 @@ export default function TabLayout() {
         name="scan"
         options={{
           title: '',
-          tabBarIcon: ({ focused }) => (
+          tabBarIcon: ({ focused }: TabIconProps) => (
             <View style={styles.scanButton}>
               <Ionicons name="qr-code-outline" size={24} color="white" />
             </View>
@@ -50,7 +55,7 @@ export default function TabLayout() {
         name="education"
         options={{
           title: 'Education',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color, focused }: TabIconProps) => (
             <Ionicons name={focused ? 'book' : 'book-outline'} size={24} color={color} />
           ),
         }}
@@ -60,7 +65,7 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color, focused }: TabIconProps) => (
             <Ionicons name={focused ? 'person' : 'person-outline'} size={24} color={color} />
           ),
         }}
