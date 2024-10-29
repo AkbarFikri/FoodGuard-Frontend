@@ -98,7 +98,7 @@ const [fontsLoaded] = useFonts({
           <Text style={styles.headerSubtitle}>Healthier choices start here.</Text>
         </View>
         <TouchableOpacity style={styles.notificationButton}>
-          <Ionicons name="notifications-outline" size={24} color="#666" />
+          <Ionicons name="notifications-outline" size={20} color="#666" />
         </TouchableOpacity>
       </View>
 
@@ -135,28 +135,29 @@ header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 28,
-    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingTop: 80,
     paddingBottom: 16,
 },
 headerTitle: {
-    fontFamily: 'Archivo-Bold',
-    fontSize: 20,
+    fontFamily: 'Archivo-Medium',
+    fontSize: 18,
     color: '#000',
 },
 headerSubtitle: {
-    fontFamily: 'Archivo-Medium',
-    fontSize: 14,
+    fontFamily: 'Archivo',
+    fontSize: 15,
     color: '#666',
     marginTop: 4,
 },
 notificationButton: {
     padding: 8,
+    marginBottom: 15,
 },
 
 // Search section styles
 searchContainer: {
-    paddingHorizontal: 28,
+    paddingHorizontal: 20,
     paddingBottom: 0,
 },
 searchInputContainer: {
@@ -181,20 +182,19 @@ scrollView: {
     flex: 1,
 },
 
-
-
 // Course card styles
 card: {
     flexDirection: 'row',
-    margin: 16,
+    marginTop: 10,
+    // marginBottom: 10,
     backgroundColor: '#fff',
+    paddingHorizontal: 10,
 },
 cardImage: {
     width: 130,
     height: 130,
     borderRadius: 10,
     margin: 12,
-    marginBottom: 10,
 },
 cardContent: {
     flex: 1,

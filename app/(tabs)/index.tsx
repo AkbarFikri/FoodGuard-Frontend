@@ -62,8 +62,8 @@ export default function HomeScreen() {
           </ThemedView>
         </ThemedView>
         
-        <TouchableOpacity style={styles.bellContainer}>
-          <Ionicons name="notifications-outline" size={24} color="black" />
+        <TouchableOpacity style={styles.notificationButton}>
+          <Ionicons name="notifications-outline" size={20} color="#666" />
         </TouchableOpacity>
       </ThemedView>
 
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     marginTop: -13,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     padding: 16,
     backgroundColor: 'white',
     marginBottom: -10,
@@ -292,15 +292,17 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'Archivo',
     color: '#666',
     marginTop: 2,
   },
-  bellContainer: {
+  notificationButton: {
     padding: 8,
-    marginRight: -15,
-  },
+    marginTop: -3,
+    marginBottom: 16,
+    marginLeft: 147,
+},
 
   // health summary overview container
   healthSummaryContainer: {
