@@ -15,8 +15,17 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#6366F1',
         headerShown: false,
         tabBarStyle: {
-          height: 60,
+          height: 50,
           position: 'relative',
+        },
+        tabBarItemStyle: {
+          marginTop: 5,
+          paddingVertical: -15,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          paddingVertical: -10,
+          marginBottom: 5,
         },
       }}>
       <Tabs.Screen
@@ -24,7 +33,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }: TabIconProps) => (
-            <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'home' : 'home-outline'} size={20} color={color} />
           ),
         }}
       />
@@ -34,7 +43,7 @@ export default function TabLayout() {
         options={{
           title: 'History',
           tabBarIcon: ({ color, focused }: TabIconProps) => (
-            <Ionicons name={focused ? 'time' : 'time-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'time' : 'time-outline'} size={20} color={color} />
           ),
         }}
       />
@@ -45,7 +54,7 @@ export default function TabLayout() {
           title: '',
           tabBarIcon: ({ focused }: TabIconProps) => (
             <View style={styles.scanButton}>
-              <Ionicons name="qr-code-outline" size={24} color="white" />
+              <Ionicons name="qr-code-outline" size={20} color="white" />
             </View>
           ),
         }}
@@ -56,7 +65,7 @@ export default function TabLayout() {
         options={{
           title: 'Education',
           tabBarIcon: ({ color, focused }: TabIconProps) => (
-            <Ionicons name={focused ? 'book' : 'book-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'book' : 'book-outline'} size={20} color={color} />
           ),
         }}
       />
@@ -66,7 +75,7 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, focused }: TabIconProps) => (
-            <Ionicons name={focused ? 'person' : 'person-outline'} size={24} color={color} />
+            <Ionicons name={focused ? 'person' : 'person-outline'} size={20} color={color} />
           ),
         }}
       />

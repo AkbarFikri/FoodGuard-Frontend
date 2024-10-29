@@ -12,6 +12,7 @@ interface MealItemProps {
   fats: string;
   sugar: string;
   time: string;
+  isHighlighted?: boolean;
 }
 
 export default function HistoryScreen() {
@@ -25,7 +26,7 @@ export default function HistoryScreen() {
   
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}>
+      headerBackgroundColor={{ light: 'transparent', dark: 'transparent' }}>
 
       {/* consumption history header section */}
       <ThemedView style={styles.titleContainer}>
@@ -81,6 +82,7 @@ export default function HistoryScreen() {
             fats="12"
             sugar="5"
             time="Tue, 18 July • 07.00 am"
+            isHighlighted={true}
           />
         </ThemedView>
 
@@ -106,8 +108,16 @@ export default function HistoryScreen() {
 }
 
 // meal item component
-const MealItem = ({ title, carbo, fats, sugar, time }: MealItemProps) => (
-  <ThemedView style={styles.mealItem}>
+const MealItem = ({ title, carbo, fats, sugar, time, isHighlighted = false }: MealItemProps) => (
+  <ThemedView style={[
+    styles.mealItem, 
+    isHighlighted && {
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+      borderBottomLeftRadius: 16,
+      borderBottomRightRadius: 16,
+    }
+  ]}>
     <ThemedText style={styles.mealTitle}>{title}</ThemedText>
     <ThemedView style={styles.nutritionInfo}>
       <ThemedText style={styles.nutritionText}>Carbo: {carbo} <ThemedText style={styles.unit}>gram</ThemedText></ThemedText>
@@ -134,6 +144,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     padding: 0,
     backgroundColor: 'white',
+    marginHorizontal: -12,
   },
   headerTitle: {
     fontSize: 18,
@@ -155,7 +166,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 0,
     backgroundColor: 'white',
-    marginHorizontal: 0,
+    marginHorizontal: -12,
     marginVertical: 16,
     paddingVertical: 12,
     borderRadius: 12,
@@ -172,10 +183,10 @@ const styles = StyleSheet.create({
   /* -------------------- */
   periodToggleContainer: {
     flexDirection: 'row',
-    marginTop: 0,
-    marginBottom: 0,
+    marginTop: -10,
+    marginBottom: -10,
     backgroundColor: '#F3F4F6',
-    marginHorizontal: 0,
+    marginHorizontal: -12,
     borderRadius: 12,
     padding: 4,
   },
@@ -207,16 +218,19 @@ const styles = StyleSheet.create({
   // highlight section
   highlightContainer: {
     borderRadius: 16,
-    overflow: 'hidden',
     backgroundColor: 'white',
     marginHorizontal: 0,
+    borderColor: '#F0F0F0',
   },
   highlightHeader: {
+    marginHorizontal: -12,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     backgroundColor: '#6366F1',
     padding: 16,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
   },
   highlightTitle: {
     color: 'white',
@@ -229,13 +243,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 16,
     padding: 16,
-    marginHorizontal: 0,
+    marginHorizontal: -12,
     borderWidth: 2,
     borderColor: '#F0F0F0',
   },
   mealTitle: {
     fontSize: 18,
-    fontFamily: 'Archivo-Bold',
+    fontFamily: 'Archivo-Medium',
     marginBottom: 8,
   },
   nutritionInfo: {

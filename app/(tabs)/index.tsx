@@ -47,13 +47,13 @@ export default function HomeScreen() {
   
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}>
+      headerBackgroundColor={{ light: 'transparent', dark: 'transparent' }}>
 
       {/* profile section */}
       <ThemedView style={styles.profileContainer}>
         <ThemedView style={styles.leftContent}>
           <Image 
-            source={require('@/assets/images/jessy.jpeg')}
+            source={require('@/assets/images/home/jessy.jpeg')}
             style={styles.avatar}
           />
           <ThemedView style={styles.textContainer}>
@@ -73,6 +73,8 @@ export default function HomeScreen() {
           <Ionicons name="cafe-outline" size={24} color="#666" />
           <ThemedView style={styles.healthTextContainer}>
             <ThemedText style={styles.healthTitle}>Your Health Overview Summary</ThemedText>
+            <ThemedText style={styles.healthSubtitle}>Daily Carbo Limit: <ThemedText style={styles.healthValue}>25 gram</ThemedText></ThemedText>
+            <ThemedText style={styles.healthSubtitle}>Daily Fat Limit: <ThemedText style={styles.healthValue}>25 gram</ThemedText></ThemedText>
             <ThemedText style={styles.healthSubtitle}>Daily Sugar Limit: <ThemedText style={styles.healthValue}>25 gram</ThemedText></ThemedText>
           </ThemedView>
         </ThemedView>
@@ -85,21 +87,21 @@ export default function HomeScreen() {
             <Ionicons name="fast-food-outline" size={24} color="black" />
             <ThemedText style={styles.consumptionTitle}>Meal Tracker</ThemedText>
           </ThemedView>
-        </ThemedView>
-        
-        <ThemedView style={styles.dropdownsContainer}>
+          
+          <ThemedView style={styles.dropdownsContainer}>
           <TouchableOpacity 
             style={styles.dropdownButton}
             onPress={() => setShowNutrientModal(true)}>
             <ThemedText style={styles.dropdownText}>{selectedNutrient}</ThemedText>
-            <Ionicons name="chevron-down" size={16} color="black" />
+            <Ionicons name="chevron-down" size={14} color="black" />
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.dropdownButton}
             onPress={() => setShowPeriodModal(true)}>
             <ThemedText style={styles.dropdownText}>{selectedPeriod}</ThemedText>
-            <Ionicons name="chevron-down" size={16} color="black" />
+            <Ionicons name="chevron-down" size={14} color="black" />
           </TouchableOpacity>
+        </ThemedView>
         </ThemedView>
 
         <ThemedView style={styles.chartContainer}>
@@ -214,6 +216,9 @@ export default function HomeScreen() {
         </ThemedView>
       </ThemedView>
 
+      {/* AI Recommendation */}
+      <ThemedText style={styles.healthSummary}>AI Recommendation: Overall, you've already did great on controlling your diet limit!</ThemedText>
+
       {/* overall meal items section */}
       <ThemedView style={styles.mealsList}>
 
@@ -258,12 +263,14 @@ const MealItem = ({ title, carbo, fats, sugar, time }: MealItemProps) => (
 const styles = StyleSheet.create({
   // profile section
   profileContainer: {
+    marginTop: -13,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
     backgroundColor: 'white',
     marginBottom: -10,
+    marginHorizontal: -12,
   },
   leftContent: {
     flexDirection: 'row',
@@ -281,7 +288,7 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 18,
-    fontFamily: 'Archivo-Bold',
+    fontFamily: 'Archivo-Medium',
     color: '#000',
   },
   subtitle: {
@@ -292,12 +299,13 @@ const styles = StyleSheet.create({
   },
   bellContainer: {
     padding: 8,
+    marginRight: -15,
   },
 
   // health summary overview container
   healthSummaryContainer: {
     backgroundColor: 'white',
-    marginHorizontal: 0,
+    marginHorizontal: -12,
     marginVertical: 16,
     borderRadius: 16,
     padding: 14,
@@ -325,8 +333,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo',
     color: '#666',
   },
+  healthSummary: {
+    fontSize: 14,
+    fontFamily: 'Archivo',
+    color: '#666',
+  },
   healthValue: {
     fontFamily: 'Archivo-Medium',
+    fontSize: 13,
     color: '#000',
   },
 
@@ -336,7 +350,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginTop: 0,
     borderRadius: 24,
-    marginHorizontal: 0,
+    marginHorizontal: -12,
     borderWidth: 2,
     borderColor: '#F0F0F0',
   },
@@ -352,6 +366,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+    marginLeft: 0,
   },
   consumptionLeft: {
     flexDirection: 'row',
@@ -364,20 +379,21 @@ const styles = StyleSheet.create({
   },
   dropdownsContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     gap: 8,
   },
   dropdownButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    gap: 2,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
     borderRadius: 20,
     backgroundColor: '#F3F4F6',
   },
   dropdownText: {
     fontFamily: 'Archivo',
+    fontSize: 13,
     color: '#000',
   },
 
@@ -424,11 +440,13 @@ sectionTitle: {
   color: '#000',
 },
 summaryContainer: {
+  marginHorizontal: 0,
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',
   marginTop: 0,
   paddingHorizontal: 20,
+  gap: 11,
   width: '100%',
 },
 summaryBox: {
@@ -440,7 +458,6 @@ summaryBox: {
   marginLeft: 6,
   borderWidth: 2,
   borderColor: '#F0F0F0',
-  marginHorizontal: 8, 
 },
 summaryTitle: {
   fontSize: 14,
@@ -479,7 +496,7 @@ highlightContainer: {
   borderRadius: 16,
   overflow: 'hidden',
   backgroundColor: 'white',
-  marginHorizontal: 0,
+  marginHorizontal: -12,
   borderWidth: 2,
   borderColor: '#F0F0F0',
 },
