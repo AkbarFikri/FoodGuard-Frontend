@@ -79,14 +79,6 @@ export default function TabLayout() {
           ),
         }}
       />
-
-      <Tabs.Screen 
-        name="nutritionDetail"
-        options={{ 
-          tabBarButton: () => null,
-          headerShown: false,
-        }}
-      />
     </Tabs>
   );
 }
