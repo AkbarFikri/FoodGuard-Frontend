@@ -1,9 +1,18 @@
-import { StyleSheet, ScrollView, Image, Pressable, TouchableOpacity } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
-import { useFonts } from 'expo-font';
+import {
+  StyleSheet,
+  ScrollView,
+  Image,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import { useFonts } from "expo-font";
+import React from "react";
+import * as SecureStore from "expo-secure-store";
+import { useRouter } from "expo-router";
 
 interface SettingItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -12,10 +21,7 @@ interface SettingItemProps {
 }
 
 const SettingItem: React.FC<SettingItemProps> = ({ icon, title, onPress }) => (
-  <Pressable 
-    onPress={onPress}
-    style={styles.settingItem}
-  >
+  <Pressable onPress={onPress} style={styles.settingItem}>
     <ThemedView style={styles.settingContent}>
       <Ionicons name={icon} size={24} color="#666" style={styles.settingIcon} />
       <ThemedText style={styles.settingText}>{title}</ThemedText>
@@ -33,128 +39,148 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ title }) => (
 );
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const handleSettingPress = (setting: string) => {
     console.log(`Navigating to ${setting}`);
     // navigation logic
   };
 
+  const handleSignOut = async () => {
+    try {
+      await SecureStore.deleteItemAsync("userToken");
+      const token = await SecureStore.getItemAsync("userToken");
+      console.log("Current token after deletion:", token);
+      router.replace("/(auth)/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   const [fontsLoaded] = useFonts({
-    'Archivo': require('@/assets/fonts/Archivo-Regular.ttf'),
-    'Archivo-Medium': require('@/assets/fonts/Archivo-Medium.ttf'),
-    'Archivo-Bold': require('@/assets/fonts/Archivo-Bold.ttf'),
+    Archivo: require("@/assets/fonts/Archivo-Regular.ttf"),
+    "Archivo-Medium": require("@/assets/fonts/Archivo-Medium.ttf"),
+    "Archivo-Bold": require("@/assets/fonts/Archivo-Bold.ttf"),
   });
 
   return (
     <ThemedView style={styles.container}>
-    {/* profile settings header section */}
+      {/* profile settings header section */}
       <ThemedView style={styles.titleContainer}>
         <ThemedView>
           <ThemedText style={styles.headerTitle}>Profile Settings</ThemedText>
-          <ThemedText style={styles.headerSubtitle}>Manage your profile and settings.</ThemedText>
+          <ThemedText style={styles.headerSubtitle}>
+            Manage your profile and settings.
+          </ThemedText>
         </ThemedView>
         <TouchableOpacity style={styles.notificationButton}>
           <Ionicons name="notifications-outline" size={20} color="#666" />
         </TouchableOpacity>
       </ThemedView>
-        
 
-        <ThemedView style={styles.profileCard}>
-          <Image
-            source={{ uri: 'https://via.placeholder.com/60' }}
-            style={styles.profileImage}
-          />
-          <ThemedView style={styles.profileInfo}>
-            <ThemedText style={styles.profileName}>Jessy Raharjo Poetri</ThemedText>
-            <ThemedText style={styles.profileEmail}>jessyrp@gmail.com</ThemedText>
-          </ThemedView>
-          <Ionicons name="chevron-forward" size={24} color="#666" />
+      <ThemedView style={styles.profileCard}>
+        <Image
+          source={{ uri: "https://via.placeholder.com/60" }}
+          style={styles.profileImage}
+        />
+        <ThemedView style={styles.profileInfo}>
+          <ThemedText style={styles.profileName}>
+            Jessy Raharjo Poetri
+          </ThemedText>
+          <ThemedText style={styles.profileEmail}>jessyrp@gmail.com</ThemedText>
         </ThemedView>
+        <Ionicons
+          name="log-out-outline"
+          onPress={handleSignOut}
+          size={24}
+          color="#666"
+        />
+      </ThemedView>
 
-        <SectionTitle title="Pengaturan Umum" />
-        <ThemedView style={styles.section}>
-          <SettingItem 
-            icon="person-outline" 
-            title="Account Settings" 
-            onPress={() => handleSettingPress('account')}
-          />
-          <SettingItem 
-            icon="lock-closed-outline" 
-            title="Privacy & Security" 
-            onPress={() => handleSettingPress('privacy')}
-          />
-          <SettingItem 
-            icon="notifications-outline" 
-            title="Consumption Reminders" 
-            onPress={() => handleSettingPress('reminders')}
-          />
-          <SettingItem 
-            icon="nutrition-outline" 
-            title="Diet & Allergy Preferences" 
-            onPress={() => handleSettingPress('diet')}
-          />
-        </ThemedView>
+      <SectionTitle title="Pengaturan Umum" />
+      <ThemedView style={styles.section}>
+        <SettingItem
+          icon="person-outline"
+          title="Account Settings"
+          onPress={() => handleSettingPress("account")}
+        />
+        <SettingItem
+          icon="lock-closed-outline"
+          title="Privacy & Security"
+          onPress={() => handleSettingPress("privacy")}
+        />
+        <SettingItem
+          icon="notifications-outline"
+          title="Consumption Reminders"
+          onPress={() => handleSettingPress("reminders")}
+        />
+        <SettingItem
+          icon="nutrition-outline"
+          title="Diet & Allergy Preferences"
+          onPress={() => handleSettingPress("diet")}
+        />
+      </ThemedView>
 
-        <SectionTitle title="Bantuan dan Pengaturan" />
-        <ThemedView style={styles.section}>
-          <SettingItem 
-            icon="help-circle-outline" 
-            title="Help Center" 
-            onPress={() => handleSettingPress('help')}
-          />
-          <SettingItem 
-            icon="document-text-outline" 
-            title="Terms & Conditions" 
-            onPress={() => handleSettingPress('terms')}
-          />
-          <SettingItem 
-            icon="time-outline" 
-            title="Consumption History" 
-            onPress={() => handleSettingPress('history')}
-          />
-          <SettingItem 
-            icon="sync-outline" 
-            title="Synchronization Settings" 
-            onPress={() => handleSettingPress('sync')}
-          />
-        </ThemedView>
+      <SectionTitle title="Bantuan dan Pengaturan" />
+      <ThemedView style={styles.section}>
+        <SettingItem
+          icon="help-circle-outline"
+          title="Help Center"
+          onPress={() => handleSettingPress("help")}
+        />
+        <SettingItem
+          icon="document-text-outline"
+          title="Terms & Conditions"
+          onPress={() => handleSettingPress("terms")}
+        />
+        <SettingItem
+          icon="time-outline"
+          title="Consumption History"
+          onPress={() => handleSettingPress("history")}
+        />
+        <SettingItem
+          icon="sync-outline"
+          title="Synchronization Settings"
+          onPress={() => handleSettingPress("sync")}
+        />
+      </ThemedView>
       {/* </ScrollView> */}
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+  titleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginHorizontal: 0,
     marginTop: 62,
-    },
-    container: {
+  },
+  container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    },
-    headerTitle: {
+    backgroundColor: "#f5f5f5",
+  },
+  headerTitle: {
     fontSize: 18,
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
     marginBottom: 2,
-    },
-    headerSubtitle: {
+  },
+  headerSubtitle: {
     fontSize: 15,
-    color: '#666',
-    fontFamily: 'Archivo',
-    },
-    notificationButton: {
+    color: "#666",
+    fontFamily: "Archivo",
+  },
+  notificationButton: {
     padding: 8,
     marginBottom: 15,
-},
+  },
   profileCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     marginTop: 1,
   },
   profileImage: {
@@ -167,73 +193,73 @@ titleContainer: {
     marginLeft: 12,
   },
   profileName: {
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
     fontSize: 18,
   },
   profileEmail: {
-    fontFamily: 'Archivo',
-    color: '#666',
+    fontFamily: "Archivo",
+    color: "#666",
   },
   sectionTitle: {
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
     fontSize: 16,
     padding: 16,
     paddingBottom: 8,
   },
   section: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
     marginHorizontal: 16,
     marginBottom: 16,
   },
   settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: "#f0f0f0",
   },
   settingContent: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   settingIcon: {
     marginRight: 12,
   },
   settingText: {
-    fontFamily: 'Archivo',
+    fontFamily: "Archivo",
     fontSize: 16,
   },
   bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#fff",
     paddingVertical: 8,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: "#f0f0f0",
   },
   navItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 4,
   },
   navItemActive: {
-    backgroundColor: '#6366F1',
+    backgroundColor: "#6366F1",
     borderRadius: 50,
     width: 48,
     height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   navText: {
-    fontFamily: 'Archivo',
+    fontFamily: "Archivo",
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     marginTop: 4,
   },
   navTextActive: {
-    color: '#6366F1',
+    color: "#6366F1",
   },
 });

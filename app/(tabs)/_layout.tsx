@@ -1,6 +1,9 @@
-import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { View, StyleSheet } from 'react-native';
+import { SplashScreen, Tabs, useSegments } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet, Pressable } from "react-native";
+import * as SecureStore from "expo-secure-store";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 
 interface TabIconProps {
   color?: string;
@@ -9,14 +12,37 @@ interface TabIconProps {
 }
 
 export default function TabLayout() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  //   useEffect(() => {
+  //     checkAuth();
+
+  //     if (!isAuthenticated) {
+  //       router.replace("/(auth)/login");
+  //     }
+  //   }, []);
+
+  //   const checkAuth = async () => {
+  //     try {
+  //       const token = await SecureStore.getItemAsync("userToken");
+  //       setIsAuthenticated(!!token);
+  //     } catch (error) {
+  //       console.error("Error checking auth:", error);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#6366F1',
+        tabBarActiveTintColor: "#6366F1",
         headerShown: false,
         tabBarStyle: {
           height: 50,
-          position: 'relative',
+          position: "relative",
         },
         tabBarItemStyle: {
           marginTop: 5,
@@ -27,23 +53,32 @@ export default function TabLayout() {
           paddingVertical: -10,
           marginBottom: 5,
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: "Home",
           tabBarIcon: ({ color, focused }: TabIconProps) => (
-            <Ionicons name={focused ? 'home' : 'home-outline'} size={20} color={color} />
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
+              size={20}
+              color={color}
+            />
           ),
         }}
       />
-      
+
       <Tabs.Screen
         name="history"
         options={{
-          title: 'History',
+          title: "History",
           tabBarIcon: ({ color, focused }: TabIconProps) => (
-            <Ionicons name={focused ? 'time' : 'time-outline'} size={20} color={color} />
+            <Ionicons
+              name={focused ? "time" : "time-outline"}
+              size={20}
+              color={color}
+            />
           ),
         }}
       />
@@ -51,7 +86,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="scan"
         options={{
-          title: '',
+          title: "",
           tabBarIcon: ({ focused }: TabIconProps) => (
             <View style={styles.scanButton}>
               <Ionicons name="qr-code-outline" size={20} color="white" />
@@ -63,9 +98,13 @@ export default function TabLayout() {
       <Tabs.Screen
         name="education"
         options={{
-          title: 'Education',
+          title: "Education",
           tabBarIcon: ({ color, focused }: TabIconProps) => (
-            <Ionicons name={focused ? 'book' : 'book-outline'} size={20} color={color} />
+            <Ionicons
+              name={focused ? "book" : "book-outline"}
+              size={20}
+              color={color}
+            />
           ),
         }}
       />
@@ -73,9 +112,13 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: "Profile",
           tabBarIcon: ({ color, focused }: TabIconProps) => (
-            <Ionicons name={focused ? 'person' : 'person-outline'} size={20} color={color} />
+            <Ionicons
+              name={focused ? "person" : "person-outline"}
+              size={20}
+              color={color}
+            />
           ),
         }}
       />
@@ -88,9 +131,9 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#6366F1',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#6366F1",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 20,
     shadowColor: "#000",
     shadowOffset: {

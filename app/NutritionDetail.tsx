@@ -1,46 +1,73 @@
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { TouchableOpacity } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import type { RouteProp } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StyleSheet, View, ScrollView } from "react-native";
+import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/ThemedText";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { TouchableOpacity } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import type { RouteProp } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React from "react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
 type RootStackParamList = {
   history: undefined;
   nutritionDetail: {
-    title: string;
-    carbo: string;
-    fats: string;
-    sugar: string;
-    time: string;
+    id: string;
+    type: string;
+    name: string;
+    calorie?: number;
+    carbohydrates?: number;
+    fats?: number;
+    sugar?: number;
+    protein?: number;
+    createdAt: string;
+    score: number;
+    recommendation: string;
   };
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-type RouteProps = RouteProp<RootStackParamList, 'nutritionDetail'>;
+type RouteProps = RouteProp<RootStackParamList, "nutritionDetail">;
 
 export default function NutritionDetail() {
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
+
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<RouteProps>();
-  const { title, carbo, fats, sugar, time } = route.params;
+  const {
+    name,
+    carbohydrates,
+    fats,
+    sugar,
+    createdAt,
+    recommendation,
+    type,
+    protein,
+    calorie,
+    score,
+  } = route.params;
 
   // Rest of your component stays exactly the same
   const nutritionData = {
-    calories: '150 kcal',
-    carbohydrates: `${carbo} gram`,
+    calories: `${calorie} kcal`,
+    carbohydrates: `${carbohydrates} gram`,
     sugar: `${sugar} gram`,
     fats: `${fats} gram`,
-    protein: '2 gram',
-    score: 7
+    protein: `${protein} gram`,
+    score: score,
   };
 
   return (
     <ThemedView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
           <Ionicons name="chevron-back" size={24} color="#000" />
         </TouchableOpacity>
         <ThemedText style={styles.headerTitle}>Nutrition Detail</ThemedText>
@@ -49,8 +76,8 @@ export default function NutritionDetail() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Food Title Section */}
         <ThemedView style={styles.foodTitleContainer}>
-          <ThemedText style={styles.foodTitle}>{title}</ThemedText>
-          <ThemedText style={styles.foodCategory}>Fast-Food</ThemedText>
+          <ThemedText style={styles.foodTitle}>{name}</ThemedText>
+          <ThemedText style={styles.foodCategory}>{type}</ThemedText>
         </ThemedView>
 
         {/* Health Overview Section */}
@@ -58,21 +85,33 @@ export default function NutritionDetail() {
           <View style={styles.overviewHeader}>
             <Ionicons name="cafe-outline" size={24} color="#666" />
             <View>
-              <ThemedText style={styles.overviewTitle}>Your Health Overview Summary</ThemedText>
-              <ThemedText style={styles.overviewSubtitle}>Daily Sugar Limit: 25 gram</ThemedText>
+              <ThemedText style={styles.overviewTitle}>
+                Your Health Overview Summary
+              </ThemedText>
+              <ThemedText style={styles.overviewSubtitle}>
+                Daily Sugar Limit: 25 gram
+              </ThemedText>
             </View>
           </View>
         </ThemedView>
 
         {/* Score Section */}
         <ThemedView style={styles.scoreContainer}>
-          <ThemedText style={styles.scoreTitle}>Your Food's Score</ThemedText>
-          <View style={styles.scoreTimeContainer}>
-            <Ionicons name="calendar-outline" size={16} color="#666" />
-            <ThemedText style={styles.timeText}>{time}</ThemedText>
+          <View style={styles.scoreTitleContainer}>
+            <ThemedText style={styles.scoreTitle}>Your Food's Score</ThemedText>
+            <View style={styles.scoreTimeContainer}>
+              <Ionicons name="calendar-outline" size={16} color="#666" />
+              <ThemedText style={styles.timeText}>
+                {dayjs(parseInt(createdAt))
+                  .tz("Asia/Jakarta", true)
+                  .format("ddd, DD MMMM • hh.mm A")}
+              </ThemedText>
+            </View>
           </View>
           <View style={styles.scoreCircle}>
-            <ThemedText style={styles.scoreNumber}>{nutritionData.score}</ThemedText>
+            <ThemedText style={styles.scoreNumber}>
+              {nutritionData.score}
+            </ThemedText>
             <ThemedText style={styles.scoreLabel}>Out of 10</ThemedText>
           </View>
         </ThemedView>
@@ -80,15 +119,19 @@ export default function NutritionDetail() {
         {/* Nutrition Details */}
         <ThemedView style={styles.nutritionContainer}>
           {[
-            { label: 'Calories', value: nutritionData.calories },
-            { label: 'Carbohydrates', value: nutritionData.carbohydrates },
-            { label: 'Sugar', value: nutritionData.sugar },
-            { label: 'Fats', value: nutritionData.fats },
-            { label: 'Protein', value: nutritionData.protein },
+            { label: "Calories", value: nutritionData.calories },
+            { label: "Carbohydrates", value: nutritionData.carbohydrates },
+            { label: "Sugar", value: nutritionData.sugar },
+            { label: "Fats", value: nutritionData.fats },
+            { label: "Protein", value: nutritionData.protein },
           ].map((item, index) => (
             <View key={index} style={styles.nutritionRow}>
-              <ThemedText style={styles.nutritionLabel}>{item.label}</ThemedText>
-              <ThemedText style={styles.nutritionValue}>{item.value}</ThemedText>
+              <ThemedText style={styles.nutritionLabel}>
+                {item.label}
+              </ThemedText>
+              <ThemedText style={styles.nutritionValue}>
+                {item.value}
+              </ThemedText>
             </View>
           ))}
         </ThemedView>
@@ -101,7 +144,9 @@ export default function NutritionDetail() {
               <ThemedText style={styles.trackerTitle}>Meal Tracker</ThemedText>
             </View>
             <TouchableOpacity style={styles.nutrientButton}>
-              <ThemedText style={styles.nutrientButtonText}>Nutrient</ThemedText>
+              <ThemedText style={styles.nutrientButtonText}>
+                Nutrient
+              </ThemedText>
               <Ionicons name="chevron-down" size={16} color="#000" />
             </TouchableOpacity>
           </View>
@@ -109,15 +154,19 @@ export default function NutritionDetail() {
 
         {/* Recommendations Section */}
         <ThemedView style={styles.recommendationsContainer}>
-          <ThemedText style={styles.recommendationsTitle}>Recommendations</ThemedText>
+          <ThemedText style={styles.recommendationsTitle}>
+            Recommendations
+          </ThemedText>
           <View style={styles.recommendationCard}>
             <View style={styles.recommendationIcon}>
               <Ionicons name="shield-checkmark" size={24} color="#fff" />
             </View>
             <View style={styles.recommendationContent}>
-              <ThemedText style={styles.recommendationHeader}>FoodGuard AI</ThemedText>
+              <ThemedText style={styles.recommendationHeader}>
+                FoodGuard AI
+              </ThemedText>
               <ThemedText style={styles.recommendationText}>
-                Based on your food intake, we suggest switching to lower sugar options to stay within your daily limit. For a healthier alternative, try a grilled vegetable wrap or a chicken salad. Keep monitoring your carbohydrate and fat intake to maintain a balanced diet and optimize energy levels throughout the day. Stay hydrated and make sure to include fiber-rich foods to aid digestion.
+                {recommendation}
               </ThemedText>
             </View>
           </View>
@@ -133,8 +182,8 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 24,
     marginTop: 30,
   },
@@ -144,166 +193,171 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
   },
   foodTitleContainer: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: "#F3F4F6",
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
   },
   foodTitle: {
     fontSize: 18,
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
     marginBottom: 4,
   },
   foodCategory: {
-    color: '#666',
-    fontFamily: 'Archivo',
+    color: "#666",
+    fontFamily: "Archivo",
   },
   overviewContainer: {
     marginBottom: 16,
   },
   overviewHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   overviewTitle: {
     fontSize: 16,
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
   },
   overviewSubtitle: {
-    color: '#666',
-    fontFamily: 'Archivo',
+    color: "#666",
+    fontFamily: "Archivo",
   },
   scoreContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
     borderWidth: 2,
-    borderColor: '#F0F0F0',
+    borderColor: "#F0F0F0",
   },
   scoreTitle: {
     fontSize: 16,
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
     marginBottom: 4,
   },
+  scoreTitleContainer: {
+    flexDirection: "column",
+  },
   scoreTimeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
     marginBottom: 16,
   },
   timeText: {
-    color: '#666',
-    fontFamily: 'Archivo',
+    color: "#666",
+    fontFamily: "Archivo",
   },
   scoreCircle: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#6366F1',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
+    backgroundColor: "#6366F1",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
   },
   scoreNumber: {
     fontSize: 32,
-    color: 'white',
-    fontFamily: 'Archivo-Bold',
+    color: "white",
+    fontFamily: "Archivo-Bold",
+    lineHeight: 36, // Adjust the line height as needed
   },
   scoreLabel: {
-    color: 'white',
-    fontFamily: 'Archivo',
+    color: "white",
+    fontFamily: "Archivo",
+    marginTop: 4, // Add margin to separate label from the score
   },
   nutritionContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
     borderWidth: 2,
-    borderColor: '#F0F0F0',
+    borderColor: "#F0F0F0",
   },
   nutritionRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: "#F0F0F0",
   },
   nutritionLabel: {
-    fontFamily: 'Archivo',
+    fontFamily: "Archivo",
   },
   nutritionValue: {
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
   },
   trackerContainer: {
     marginBottom: 16,
   },
   trackerHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   trackerTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   trackerTitle: {
     fontSize: 16,
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
   },
   nutrientButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
     padding: 8,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: "#F3F4F6",
     borderRadius: 8,
   },
   nutrientButtonText: {
-    fontFamily: 'Archivo',
+    fontFamily: "Archivo",
   },
   recommendationsContainer: {
     marginBottom: 16,
   },
   recommendationsTitle: {
     fontSize: 16,
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
     marginBottom: 12,
   },
   recommendationCard: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 16,
     padding: 16,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     borderWidth: 2,
-    borderColor: '#F0F0F0',
+    borderColor: "#F0F0F0",
   },
   recommendationIcon: {
     width: 40,
     height: 40,
     borderRadius: 8,
-    backgroundColor: '#6366F1',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#6366F1",
+    alignItems: "center",
+    justifyContent: "center",
   },
   recommendationContent: {
     flex: 1,
   },
   recommendationHeader: {
     fontSize: 16,
-    fontFamily: 'Archivo-Medium',
+    fontFamily: "Archivo-Medium",
     marginBottom: 4,
   },
   recommendationText: {
-    color: '#666',
-    fontFamily: 'Archivo',
+    color: "#666",
+    fontFamily: "Archivo",
     lineHeight: 20,
   },
 });

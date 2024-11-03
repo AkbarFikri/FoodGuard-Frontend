@@ -53,7 +53,8 @@
         {
           "cameraPermission": "Allow FOODGUARD to access your camera"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
